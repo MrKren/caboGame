@@ -3,7 +3,9 @@ import random
 
 class Card(object):
 
-    def __init__(self, num=None, suit=None):
+    def __init__(self, num=None, suit=None, known=True):
+
+        self.known = known
 
         if num is None or suit is None:
             self.num = random.randint(1, 13)
@@ -14,12 +16,15 @@ class Card(object):
 
     def __repr__(self):
 
-        nums = {1: "A", 11: "J", 12: "Q", 13: "K"}
-        for i in range(2, 11):
-            nums[i] = str(i)
-        suits = {1: u'\u2660', 2: u'\u2665', 3: u'\u2666', 4: u'\u2663'}
+        if self.known:
+            nums = {1: "A", 11: "J", 12: "Q", 13: "K"}
+            for i in range(2, 11):
+                nums[i] = str(i)
+            suits = {1: u'\u2660', 2: u'\u2665', 3: u'\u2666', 4: u'\u2663'}
 
-        return f"{nums[self.num]}{suits[self.suit]}"
+            return f"{nums[self.num]}{suits[self.suit]}"
+
+        return f"##"
 
 
 class Hand(object):
@@ -27,6 +32,8 @@ class Hand(object):
     def __init__(self, card_num: int):
 
         self.cards = [Card() for _ in range(card_num)]
+        for card in self.cards[:len(self.cards)//2]:
+            card.known = False
 
     def __len__(self):
 
@@ -110,6 +117,7 @@ class GameRules(object):
 
     def replace(self):
         pos = int(input(f"Position (1-{len(self.hand)}): "))
+        self.hand.cards[pos-1].known = True
         self.stack.append(self.hand.cards[pos-1])
         self.hand.cards[pos-1] = self.stack_card
 
