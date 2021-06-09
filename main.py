@@ -56,10 +56,11 @@ class Hand(object):
     def score(self):
         score = 0
         for card in self.cards:
-            if (card.num == 13) and (card.suit == 2 or card.suit == 3):
-                score -= 1  # Red Kings are worth -1
-            else:
-                score += card.num
+            if card.known:
+                if (card.num == 13) and (card.suit == 2 or card.suit == 3):
+                    score -= 1  # Red Kings are worth -1
+                else:
+                    score += card.num
 
         return score
 
@@ -77,7 +78,6 @@ class GameRules(object):
         self.stack = [Card()]
         self.stack_card = None
         self.hand = None
-        self.key_words = {"": self.play, "play": self.play, "swap": self.replace}
 
     def turn(self):
         print(f"Turn : {self.turn_num}\n")
@@ -98,7 +98,10 @@ class GameRules(object):
                 self.stack_card = self.stack.pop()
                 print(f"Top Deck : {self.stack_card}")
                 key_word = input("Choices: play, swap\n")
-                self.key_words[key_word]()
+                if key_word == "swap":
+                    self.replace()
+                else:
+                    self.play()
             if self.final_turn == 0:
                 if input("Cabo ?\n").lower() == "y":
                     self.final_turn = self.turn_num + 1
@@ -110,7 +113,12 @@ class GameRules(object):
         self.turn()
         print(f"Final Scores:\n")
         for i, hand in enumerate(self.hands):
+            for card in hand.cards:
+                card.known = True
             print(f"Player {i+1}: {hand.score()}")
+        print("\n")
+        for hand in self.hands:
+            hand.state()
 
     def play(self):
         self.stack.append(self.stack_card)
