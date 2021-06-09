@@ -76,7 +76,7 @@ class GameRules(object):
         self.final_turn = 0
         self.final_player = None
         self.stack = [Card()]
-        self.stack_card = None
+        self.stack_card = Card()
         self.hand = None
 
     def turn(self):
@@ -122,6 +122,13 @@ class GameRules(object):
 
     def play(self):
         self.stack.append(self.stack_card)
+        if (self.stack_card.num == 9) or (self.stack_card.num == 10):
+            self.peek()
+
+    def peek(self):
+        pos = int(input(f"Pick a card to flip (1-{len(self.hand)}): "))
+        self.hand.cards[pos-1].known = True
+        print(self.hand.cards[pos-1])
 
     def replace(self):
         pos = int(input(f"Position (1-{len(self.hand)}): "))
