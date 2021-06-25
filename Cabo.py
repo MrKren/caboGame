@@ -29,9 +29,10 @@ class Card(object):
 
 class Hand(object):
 
-    def __init__(self, card_num: int):
+    def __init__(self, card_num: int, index: int):
 
         self.cards = [Card() for _ in range(card_num)]
+        self.index = index
         for card in self.cards[:len(self.cards)//2]:
             card.known = False
 
@@ -71,7 +72,7 @@ class Hand(object):
 class GameRules(object):
 
     def __init__(self, players: int):
-        self.hands = [Hand(6) for _ in range(players)]
+        self.hands = [Hand(6, i+1) for i in range(players)]
         self.turn_num = 1
         self.final_turn = 0
         self.final_player = None
@@ -81,12 +82,12 @@ class GameRules(object):
 
     def turn(self):
         print(f"Turn : {self.turn_num}\n")
-        for i, self.hand in enumerate(self.hands):
+        for self.hand in self.hands:
 
             if self.hand == self.final_player:
                 break
 
-            print(f"Player {i + 1}")
+            print(f"Player {self.hand.index}")
             self.hand.state()
             self.stack_card = self.stack.pop()
             print(f"Stack : {self.stack_card}")
@@ -112,18 +113,35 @@ class GameRules(object):
     def winner(self):
         self.turn()
         print(f"Final Scores:\n")
-        for i, hand in enumerate(self.hands):
+        for hand in self.hands:
             for card in hand.cards:
                 card.known = True
-            print(f"Player {i+1}: {hand.score()}")
+            print(f"Player {hand.index}: {hand.score()}")
         print("\n")
         for hand in self.hands:
             hand.state()
 
     def play(self):
         self.stack.append(self.stack_card)
-        if (self.stack_card.num == 9) or (self.stack_card.num == 10):
+        if (self.stack_card.num == 7) or (self.stack_card.num == 8):
             self.peek()
+        if (self.stack_card.num == 9) or (self.stack_card.num == 10):
+            self.swap()
+        if (self.stack_card.num == 11) or (self.stack_card.num == 12):
+            self.swap()
+
+    def swap(self):
+        pos = int(input(f"Your position (1-{len(self.hand)}): "))
+
+        player_choices = self.hands.copy()
+        player_choices.remove(self.hand)
+        player_choice = int(input(f"Pick a player to swap with ({[hand.index for hand in player_choices]}): "))
+        player_choice = self.hands[player_choice-1]
+        player_pos = int(input(f"Their position (1-{len(player_choice)}): "))
+
+        place_holder = player_choice.cards[player_pos-1]
+        player_choice.cards[player_pos-1] = self.hand.cards[pos-1]
+        self.hand.cards[pos-1] = place_holder
 
     def peek(self):
         pos = int(input(f"Pick a card to flip (1-{len(self.hand)}): "))
