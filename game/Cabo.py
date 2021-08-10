@@ -11,12 +11,13 @@ class Card(object):
             self.nums[i] = str(i)
         self.suits = {1: u'\u2660', 2: u'\u2665', 3: u'\u2666', 4: u'\u2663'}
 
-        if num is None or suit is None:
+        self.num = num
+        self.suit = suit
+
+        if num is None:
             self.num = random.randint(1, 13)
+        if suit is None:
             self.suit = random.randint(1, 4)
-        else:
-            self.num = num
-            self.suit = suit
 
     def __repr__(self):
 
@@ -28,6 +29,10 @@ class Card(object):
     def peek(self):
 
         return f"{self.nums[self.num]}{self.suits[self.suit]}"
+
+    def flip(self):
+
+        self.known = True
 
 
 class Hand(object):
@@ -168,9 +173,10 @@ class GameRules(object):
         self.hand.cards[pos-1] = self.stack_card
 
 
-game = GameRules(3)
+if __name__ == "__main__":
+    game = GameRules(3)
 
-# Game Loop
-while game.turn_num != game.final_turn:
-    game.turn()
-game.winner()
+    # Game Loop
+    while game.turn_num != game.final_turn:
+        game.turn()
+    game.winner()
