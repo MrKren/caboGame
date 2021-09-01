@@ -10,7 +10,9 @@ class Card(object):
         pass
 
     def __repr__(self):
-        pass
+        if self.face_up:
+            return self.peek()
+        return "##"
 
     def flip_up(self):
         self.face_up = True
@@ -19,7 +21,12 @@ class Card(object):
         self.face_up = False
 
     def peek(self) -> str:
-        pass
+        nums = {1: "A", 11: "J", 12: "Q", 13: "K"}
+        for i in range(2, 11):
+            nums[i] = str(i)
+        suits = {1: u'\u2660', 2: u'\u2665', 3: u'\u2666', 4: u'\u2663'}
+
+        return f"{nums[self.num]}{suits[self.suit]}"
 
 
 class RandomCard(Card):
@@ -41,10 +48,10 @@ class Hand(object):
     def __len__(self):
         return len(self.cards)
 
-    def add_card(self):
+    def add_card(self, card: Card):
         pass
 
-    def remove_card(self):
+    def remove_card(self, card: Card):
         pass
 
 
