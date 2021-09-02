@@ -29,10 +29,21 @@ class TestCard(TestCase):
 
 class TestHand(TestCase):
     def test_add_card(self):
-        self.fail()
+        hand = Hand(6)
+        card = RandomCard(True)
+        self.assertEqual(len(hand), 6)
+        hand.add_card(card)
+        self.assertEqual(len(hand), 7)
+        self.assertEqual(hand.cards[-1], card)
 
     def test_remove_card(self):
-        self.fail()
+        hand = Hand(6)
+        card = hand.cards[0]
+        cards = hand.cards[1:]
+        self.assertEqual(len(hand), 6)
+        hand.remove_card(card)
+        self.assertEqual(len(hand), 5)
+        self.assertEqual(hand.cards, cards)
 
 
 class TestTurn(TestCase):
